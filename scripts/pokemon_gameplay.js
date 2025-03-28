@@ -353,7 +353,7 @@ PokemonSystem.prototype.drawWildPokemons = function(ctx, gameMap) {
             const screenX = dx * scale + canvasWidth/2;
             const screenY = dy * scale + canvasHeight/2 + pokemon.bounceOffset;
             
-			// Dessiner le Pokémon seulement si visible
+            // Dessiner le Pokémon seulement si visible
             if (screenX > -56 && screenX < canvasWidth + 56 &&
                 screenY > -56 && screenY < canvasHeight + 56) {
                 ctx.drawImage(
@@ -484,7 +484,7 @@ PokemonSystem.prototype.drawEncounterScreen = function(ctx) {
                     32, 32
                 );
                 
-                // Si la capture est terminée et réussie
+// Si la capture est terminée et réussie
                 if (this.captureAnimation.progress >= 0.85 && this.captureAnimation.result) {
                     // Animation de succès: petites étoiles ou particules autour de la ball
                     for (let i = 0; i < 8; i++) {

@@ -108,11 +108,9 @@ class PokemonSystem {
         const types = ['normal', 'super', 'hyper'];
         
         types.forEach(type => {
-            // Correction du chemin pour le type 'normal'
-            const spritePath = type === 'normal' 
-                ? 'assets/sprites/pokeball.png'  // Chemin explicite pour normal
-                : `assets/sprites/${type}ball.png`;
-                
+            // Correction du chemin pour utiliser des chemins relatifs
+            const spritePath = `./assets/sprites/${type}ball.png`;
+            
             const img = new Image();
             img.src = spritePath;
             
@@ -148,15 +146,19 @@ class PokemonSystem {
     preloadPokemonSprites() {
         this.waterPokemons.forEach(pokemon => {
             const img = new Image();
-            img.src = `assets/sprites/pokemon/${pokemon.sprite}`;
+            img.src = `./assets/sprites/pokemon/${pokemon.sprite}`;
+            
+            // Log pour déboguer
+            console.log(`Chargement du sprite Pokémon: ${pokemon.name} depuis ./assets/sprites/pokemon/${pokemon.sprite}`);
             
             // Stocker la promesse de chargement pour optimisation
             const loadPromise = new Promise((resolve) => {
                 img.onload = () => {
+                    console.log(`Sprite de ${pokemon.name} chargé avec succès`);
                     resolve(true);
                 };
-                img.onerror = () => {
-                    console.error(`ERREUR: Impossible de charger le sprite de ${pokemon.name}`);
+                img.onerror = (e) => {
+                    console.error(`ERREUR: Impossible de charger le sprite de ${pokemon.name} depuis ./assets/sprites/pokemon/${pokemon.sprite}`, e);
                     resolve(false);
                 };
             });
@@ -173,8 +175,8 @@ class PokemonSystem {
             });
         });
     }
-    
-    // Méthode pour créer des sprites de secours pour les Pokémon
+	
+	// Méthode pour créer des sprites de secours pour les Pokémon
     createFallbackPokemonSprites() {
         // Palette de couleurs pour différencier les Pokémon
         const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#9932CC', '#FF8C00', '#20B2AA', '#FF69B4'];
@@ -225,6 +227,12 @@ class PokemonSystem {
                         ctx.arc(36, 20, 2, 0, Math.PI * 2);
                         ctx.fill();
                         
+                        // Nom du Pokémon en bas
+                        ctx.fillStyle = 'black';
+                        ctx.font = '8px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(pokemon.name, 28, 53);
+                        
                     } else if (pokemon.rarity === 2) {
                         // Pokémon commun mais pas trop: forme moyenne
                         ctx.fillStyle = color;
@@ -251,6 +259,12 @@ class PokemonSystem {
                         ctx.arc(22, 20, 2, 0, Math.PI * 2);
                         ctx.fill();
                         
+                        // Nom du Pokémon en bas
+                        ctx.fillStyle = 'black';
+                        ctx.font = '8px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(pokemon.name, 28, 53);
+                        
                     } else {
                         // Pokémon commun: forme simple
                         ctx.fillStyle = color;
@@ -274,13 +288,13 @@ class PokemonSystem {
                         ctx.beginPath();
                         ctx.arc(28, 33, 5, 0.1 * Math.PI, 0.9 * Math.PI);
                         ctx.stroke();
+                        
+                        // Nom du Pokémon en bas
+                        ctx.fillStyle = 'black';
+                        ctx.font = '8px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(pokemon.name, 28, 53);
                     }
-                    
-                    // Nom du Pokémon en bas
-                    ctx.fillStyle = 'black';
-                    ctx.font = '8px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(pokemon.name, 28, 53);
                     
                     // Utiliser ce canvas comme sprite
                     spriteData.image.src = canvas.toDataURL();
@@ -357,4 +371,18 @@ class PokemonSystem {
         
         this.updateCounters();
     }
+    
+    // Fonctions pour le gameplay - à déplacer dans pokemon_gameplay.js
+    // Ces méthodes restent déclarées ici pour la compatibilité
+    spawnWildPokemon(gameMap) {}
+    updateWildPokemons(gameMap) {}
+    checkWildPokemonCollisions(playerPosition, gameMap) {}
+    escape() {}
+    attemptCapture(ballType) {}
+    updateCaptureAnimation() {}
+    showCaptureSuccessAnimation() {}
+    update(gameMap) {}
+    drawWildPokemons(ctx, gameMap) {}
+    drawEncounterScreen(ctx) {}
+    drawCapturedPokemon(ctx) {}
 }

@@ -1,19 +1,19 @@
 // scripts/player.js
 class Player {
     constructor() {
-        // Dimensions des frames du sprite - corrigées selon l'image
-        this.width = 32; // Largeur d'une frame
-        this.height = 32; // Hauteur d'une frame (corrigé de 28 à 32)
+        // Dimensions des frames du sprite
+        this.width = 32; 
+        this.height = 32; 
         this.frameX = 0;
         this.frameY = 0; // Direction (0:bas, 1:gauche, 2:droite, 3:haut)
         
-        // Charger le sprite du joueur normal
+        // Charger le sprite du joueur normal avec chemins relatifs
         this.sprite = new Image();
-        this.sprite.src = 'assets/sprites/player_01.png';
+        this.sprite.src = './assets/sprites/player_01.png';
         
         // Charger le sprite du joueur pour les zones sombres
         this.darkSprite = new Image();
-        this.darkSprite.src = 'assets/sprites/player_02.png';
+        this.darkSprite.src = './assets/sprites/player_02.png';
         
         // Indicateur pour savoir quel sprite utiliser
         this.isOnDarkZone = false;
@@ -36,12 +36,12 @@ class Player {
         };
         
         this.sprite.onerror = () => {
-            console.error("ERREUR: Impossible de charger le sprite normal du joueur");
+            console.error("ERREUR: Impossible de charger le sprite normal du joueur (./assets/sprites/player_01.png)");
             this.createFallbackSprite(this.sprite, false);
         };
         
         this.darkSprite.onerror = () => {
-            console.error("ERREUR: Impossible de charger le sprite sombre du joueur");
+            console.error("ERREUR: Impossible de charger le sprite sombre du joueur (./assets/sprites/player_02.png)");
             this.createFallbackSprite(this.darkSprite, true);
         };
     }
