@@ -3,107 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Assets</title>
+    <title>Diagnostic des chemins</title>
     <style>
-        body { font-family: monospace; padding: 20px; }
-        .test-item { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+        .test-section { margin: 20px 0; padding: 15px; background: white; border-radius: 5px; }
+        .path-test { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
         .success { background-color: #d4edda; color: #155724; }
         .error { background-color: #f8d7da; color: #721c24; }
-        img { max-width: 100px; max-height: 100px; margin: 5px; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>Test de chargement des assets</h1>
-    <div id="results"></div>
+    <h1>🔍 Diagnostic des chemins d'accès</h1>
+    
+    <div class="test-section">
+        <h2>1. Informations sur l'environnement</h2>
+        <div id="env-info"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test des variantes de chemins</h2>
+        <div id="path-tests"></div>
+        <button onclick="testAllPaths()">🧪 Tester tous les chemins</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Recommandations</h2>
+        <div id="recommendations"></div>
+    </div>
 
     <script>
-        const assets = [
-            'assets/logo.png',
-            'assets/background.jpg',
-            'assets/maps/world_map.png',
-            'assets/sprites/pokeball.png',
-            'assets/sprites/superball.png',
-            'assets/sprites/hyperball.png',
-            'assets/sprites/player_01.png',
-            'assets/sprites/player_02.png',
-            'assets/sprites/pokemon/magicarpe.png',
-            'assets/sprites/pokemon/tentacool.png'
-        ];
+        // Informations sur l'environnement
+        function displayEnvInfo() {
+            const envInfo = document.getElementById('env-info');
+            const info = `
+                <div class="info path-test">
+                    <strong>URL actuelle:</strong> ${window.location.href}<br>
+                    <strong>Protocole:</strong> ${window.location.protocol}<br>
+                    <strong>Host:</strong> ${window.location.host}<br>
+                    <strong>Pathname:</strong> ${window.location.pathname}<br>
+                    <strong>User Agent:</strong> ${navigator.userAgent.substring(0, 100)}...
+                </div>
+            `;
+            envInfo.innerHTML = info;
+        }
 
-        const scripts = [
-            'scripts/map_data.js',
-            'scripts/player.js',
-            'scripts/map.js',
-            'scripts/pokemon.js',
-            'scripts/game.js'
-        ];
-
-        const resultsDiv = document.getElementById('results');
-
-        function testAsset(src, type = 'image') {
+        // Test d'un chemin spécifique
+        async function testPath(path, description) {
             return new Promise((resolve) => {
-                if (type === 'image') {
-                    const img = new Image();
-                    img.onload = () => resolve({ src, success: true, error: null });
-                    img.onerror = () => resolve({ src, success: false, error: 'Image non trouvée' });
-                    img.src = src;
-                } else if (type === 'script') {
-                    fetch(src)
-                        .then(response => {
-                            if (response.ok) {
-                                resolve({ src, success: true, error: null });
-                            } else {
-                                resolve({ src, success: false, error: `HTTP ${response.status}` });
-                            }
-                        })
-                        .catch(error => {
-                            resolve({ src, success: false, error: error.message });
-                        });
-                }
+                const img = new Image();
+                const startTime = Date.now();
+                
+                img.onload = () => {
+                    const loadTime = Date.now() - startTime;
+                    resolve({
+                        path,
+                        description,
+                        success: true,
+                        error: null,
+                        loadTime,
+                        size: `${img.naturalWidth}x${img.naturalHeight}`
+                    });
+                };
+                
+                img.onerror = (e) => {
+                    resolve({
+                        path,
+                        description,
+                        success: false,
+                        error: 'Impossible de charger l\'image',
+                        loadTime: null,
+                        size: null
+                    });
+                };
+                
+                img.src = path;
             });
         }
 
-        async function runTests() {
-            resultsDiv.innerHTML = '<p>Test en cours...</p>';
+        // Tester différentes variantes de chemins
+        async function testAllPaths() {
+            const pathTests = document.getElementById('path-tests');
+            pathTests.innerHTML = '<p>🔄 Test en cours...</p>';
             
-            // Test des images
-            const imageResults = await Promise.all(assets.map(asset => testAsset(asset, 'image')));
+            // Différentes variantes de chemins à tester
+            const pathVariants = [
+                // Chemins relatifs standards
+                { path: 'assets/logo.png', desc: 'Chemin relatif standard' },
+                { path: './assets/logo.png', desc: 'Chemin relatif explicite' },
+                
+                // Variantes de casse
+                { path: 'Assets/logo.png', desc: 'Assets avec majuscule' },
+                { path: 'ASSETS/logo.png', desc: 'ASSETS en majuscules' },
+                { path: 'assets/Logo.png', desc: 'logo.png avec majuscule' },
+                { path: 'assets/LOGO.png', desc: 'LOGO.png en majuscules' },
+                
+                // Extensions alternatives
+                { path: 'assets/logo.PNG', desc: 'Extension PNG en majuscules' },
+                { path: 'assets/logo.jpg', desc: 'Extension .jpg au lieu de .png' },
+                { path: 'assets/logo.jpeg', desc: 'Extension .jpeg' },
+                
+                // Chemins absolus (si GitHub Pages)
+                { path: '/assets/logo.png', desc: 'Chemin absolu depuis racine' },
+                
+                // Test d'autres fichiers
+                { path: 'assets/sprites/pokeball.png', desc: 'Pokeball - chemin standard' },
+                { path: 'assets/sprites/Pokeball.png', desc: 'Pokeball avec majuscule' },
+                { path: 'assets/Sprites/pokeball.png', desc: 'Sprites avec majuscule' },
+                
+                // Test de la carte
+                { path: 'assets/maps/world_map.png', desc: 'Carte - chemin standard' },
+                { path: 'assets/Maps/world_map.png', desc: 'Maps avec majuscule' },
+                { path: 'assets/maps/World_map.png', desc: 'World_map avec majuscule' },
+            ];
             
-            // Test des scripts
-            const scriptResults = await Promise.all(scripts.map(script => testAsset(script, 'script')));
+            const results = await Promise.all(
+                pathVariants.map(variant => testPath(variant.path, variant.desc))
+            );
             
-            const allResults = [...imageResults, ...scriptResults];
+            let html = '';
+            let successCount = 0;
             
-            let html = '<h2>Résultats des tests :</h2>';
-            
-            allResults.forEach(result => {
+            results.forEach(result => {
                 const className = result.success ? 'success' : 'error';
-                const status = result.success ? '✅ OK' : `❌ ERREUR: ${result.error}`;
+                const icon = result.success ? '✅' : '❌';
+                const details = result.success 
+                    ? `(${result.size}, ${result.loadTime}ms)` 
+                    : `(${result.error})`;
+                
+                if (result.success) successCount++;
                 
                 html += `
-                    <div class="test-item ${className}">
-                        <strong>${result.src}</strong> - ${status}
-                        ${result.success && result.src.includes('.png') ? `<br><img src="${result.src}" alt="Preview">` : ''}
+                    <div class="path-test ${className}">
+                        ${icon} <strong>${result.description}</strong><br>
+                        <code>${result.path}</code> ${details}
                     </div>
                 `;
             });
             
-            const successCount = allResults.filter(r => r.success).length;
-            const totalCount = allResults.length;
+            pathTests.innerHTML = html;
             
-            html += `<h3>Résumé: ${successCount}/${totalCount} fichiers chargés avec succès</h3>`;
-            
-            if (successCount === totalCount) {
-                html += '<p style="color: green; font-weight: bold;">🎉 Tous les assets sont correctement chargés !</p>';
-            } else {
-                html += '<p style="color: red; font-weight: bold;">⚠️ Certains fichiers sont manquants. Vérifiez la structure de vos dossiers.</p>';
-            }
-            
-            resultsDiv.innerHTML = html;
+            // Générer des recommandations
+            generateRecommendations(results, successCount);
         }
 
-        // Lancer les tests
-        runTests();
+        function generateRecommendations(results, successCount) {
+            const recommendations = document.getElementById('recommendations');
+            
+            if (successCount === 0) {
+                recommendations.innerHTML = `
+                    <div class="error path-test">
+                        <h3>❌ Aucun fichier trouvé</h3>
+                        <p><strong>Actions recommandées :</strong></p>
+                        <ol>
+                            <li>Vérifiez que le dossier <code>assets/</code> existe à la racine</li>
+                            <li>Vérifiez que tous les fichiers sont bien uploadés sur GitHub</li>
+                            <li>Vérifiez les noms de fichiers (sensibles à la casse)</li>
+                            <li>Si vous êtes en local, utilisez un serveur web : <code>python -m http.server 8000</code></li>
+                        </ol>
+                    </div>
+                `;
+            } else {
+                const workingPaths = results.filter(r => r.success);
+                const workingPath = workingPaths[0];
+                
+                recommendations.innerHTML = `
+                    <div class="success path-test">
+                        <h3>✅ Solution trouvée !</h3>
+                        <p><strong>Chemin fonctionnel détecté :</strong> <code>${workingPath.path}</code></p>
+                        <p><strong>Appliquez cette structure à tous vos assets.</strong></p>
+                        
+                        ${workingPaths.length > 1 ? `
+                            <details>
+                                <summary>Autres chemins fonctionnels (${workingPaths.length - 1}) :</summary>
+                                ${workingPaths.slice(1).map(p => `<code>${p.path}</code>`).join('<br>')}
+                            </details>
+                        ` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        // Test de l'existence des dossiers
+        async function testFolderStructure() {
+            const folders = ['assets/', 'scripts/', 'assets/sprites/', 'assets/maps/'];
+            
+            // Technique : essayer de charger un fichier index.html dans chaque dossier
+            // Si 404, le dossier n'existe pas. Si 403, le dossier existe mais pas d'index
+            
+            for (const folder of folders) {
+                try {
+                    const response = await fetch(folder);
+                    console.log(`📁 ${folder}:`, response.status === 403 ? 'EXISTS' : 'UNKNOWN');
+                } catch (e) {
+                    console.log(`📁 ${folder}: ERROR`, e.message);
+                }
+            }
+        }
+
+        // Initialiser
+        displayEnvInfo();
+        testFolderStructure();
+        
+        // Auto-test au chargement
+        setTimeout(testAllPaths, 1000);
     </script>
 </body>
 </html>
