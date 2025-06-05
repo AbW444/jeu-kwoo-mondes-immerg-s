@@ -3,47 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu Kwoo</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Test Assets</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .test-item { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        img { max-width: 100px; max-height: 100px; margin: 5px; }
+    </style>
 </head>
 <body>
-    <div id="game-header">
-        <img id="game-logo" src="assets/logo.png" alt="Jeu Kwoo">
-    </div>
-    
-    <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        
-        <div id="notification-area"></div>
-        <div id="battle-text"></div>
-        
-        <div id="pokeball-buttons">
-            <div class="pokeball-button" id="pokeball-btn">
-                <img src="assets/sprites/pokeball.png" width="40" height="40" alt="Pokeball">
-                <span id="pokeball-count">0</span>
-            </div>
-            <div class="pokeball-button" id="superball-btn">
-                <img src="assets/sprites/superball.png" width="40" height="40" alt="Superball">
-                <span id="superball-count">0</span>
-            </div>
-            <div class="pokeball-button" id="hyperball-btn">
-                <img src="assets/sprites/hyperball.png" width="40" height="40" alt="Hyperball">
-                <span id="hyperball-count">0</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Scripts du jeu -->
-    <script src="scripts/config.js"></script>
-    <script src="scripts/map_data.js"></script>
-    <script src="scripts/player.js"></script>
-    <script src="scripts/map.js"></script>
-    
-    <!-- Scripts Pokémon divisés en deux parties -->
-    <script src="scripts/pokemon_core.js"></script>
-    <script src="scripts/pokemon_gameplay.js"></script>
-    
-    <!-- Script principal du jeu -->
-    <script src="scripts/game.js"></script>
+    <h1>Test de chargement des assets</h1>
+    <div id="results"></div>
+
+    <script>
+        const assets = [
+            'assets/logo.png',
+            'assets/background.jpg',
+            'assets/maps/world_map.png',
+            'assets/sprites/pokeball.png',
+            'assets/sprites/superball.png',
+            'assets/sprites/hyperball.png',
+            'assets/sprites/player_01.png',
+            'assets/sprites/player_02.png',
+            'assets/sprites/pokemon/magicarpe.png',
+            'assets/sprites/pokemon/tentacool.png'
+        ];
+
+        const scripts = [
+            'scripts/map_data.js',
+            'scripts/player.js',
+            'scripts/map.js',
+            'scripts/pokemon.js',
+            'scripts/game.js'
+        ];
+
+        const resultsDiv = document.getElementById('results');
+
+        function testAsset(src, type = 'image') {
+            return new Promise((resolve) => {
+                if (type === 'image') {
+                    const img = new Image();
+                    img.onload = () => resolve({ src, success: true, error: null });
+                    img.onerror = () => resolve({ src, success: false, error: 'Image non trouvée' });
+                    img.src = src;
+                } else if (type === 'script') {
+                    fetch(src)
+                        .then(response => {
+                            if (response.ok) {
+                                resolve({ src, success: true, error: null });
+                            } else {
+                                resolve({ src, success: false, error: `HTTP ${response.status}` });
+                            }
+                        })
+                        .catch(error => {
+                            resolve({ src, success: false, error: error.message });
+                        });
+                }
+            });
+        }
+
+        async function runTests() {
+            resultsDiv.innerHTML = '<p>Test en cours...</p>';
+            
+            // Test des images
+            const imageResults = await Promise.all(assets.map(asset => testAsset(asset, 'image')));
+            
+            // Test des scripts
+            const scriptResults = await Promise.all(scripts.map(script => testAsset(script, 'script')));
+            
+            const allResults = [...imageResults, ...scriptResults];
+            
+            let html = '<h2>Résultats des tests :</h2>';
+            
+            allResults.forEach(result => {
+                const className = result.success ? 'success' : 'error';
+                const status = result.success ? '✅ OK' : `❌ ERREUR: ${result.error}`;
+                
+                html += `
+                    <div class="test-item ${className}">
+                        <strong>${result.src}</strong> - ${status}
+                        ${result.success && result.src.includes('.png') ? `<br><img src="${result.src}" alt="Preview">` : ''}
+                    </div>
+                `;
+            });
+            
+            const successCount = allResults.filter(r => r.success).length;
+            const totalCount = allResults.length;
+            
+            html += `<h3>Résumé: ${successCount}/${totalCount} fichiers chargés avec succès</h3>`;
+            
+            if (successCount === totalCount) {
+                html += '<p style="color: green; font-weight: bold;">🎉 Tous les assets sont correctement chargés !</p>';
+            } else {
+                html += '<p style="color: red; font-weight: bold;">⚠️ Certains fichiers sont manquants. Vérifiez la structure de vos dossiers.</p>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        // Lancer les tests
+        runTests();
+    </script>
 </body>
 </html>
