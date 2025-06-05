@@ -390,8 +390,6 @@ class PokemonSystem {
         }
     }
     
-    // === MÉTHODES DE GAMEPLAY ===
-    
     // Générer un Pokémon sauvage sur la carte
     spawnWildPokemon(gameMap) {
         // Limiter le nombre total de Pokémon sur la carte à 20 (augmenté de 5 à 20)
@@ -681,13 +679,6 @@ class PokemonSystem {
         }
     }
     
-    // Mettre à jour l'ensemble du système Pokémon
-    update(gameMap) {
-        // Mettre à jour les Pokémon sauvages
-        this.updateWildPokemons(gameMap);
-        
-        // Vérifier les collisions avec les Pokémon sauvages si pas déjà en rencontre
-        if (!this.isEncountering) {
     // Mettre à jour l'ensemble du système Pokémon
     update(gameMap) {
         // Mettre à jour les Pokémon sauvages
