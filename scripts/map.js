@@ -1,5 +1,6 @@
 	// scripts/map.js - Dans constructor
-	constructor() {
+class GameMap {
+    constructor() {
 		// Charger la carte du monde avec chemin absolu
 		this.image = new Image();
 		this.image.src = 'assets/maps/world_map.png';
