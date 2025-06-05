@@ -38,8 +38,8 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// Appliquer l'arrière-plan du site
-document.body.style.backgroundImage = 'url("assets/background.jpg")';
+// Appliquer l'arrière-plan du site - CHEMIN CORRIGÉ
+document.body.style.backgroundImage = 'url("Assets/background.jpg")';
 document.body.style.backgroundSize = 'cover';
 document.body.style.backgroundPosition = 'center';
 document.body.style.backgroundRepeat = 'no-repeat';
