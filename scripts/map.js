@@ -1,68 +1,70 @@
-	// scripts/map.js - Dans constructor
+// scripts/map.js
 class GameMap {
     constructor() {
-		// Charger la carte du monde avec chemin absolu
-		this.image = new Image();
-		this.image.src = 'assets/maps/world_map.png';
-		
-		// Dimensions réelles de la carte
-		this.width = 8192;
-		this.height = 4096;
-		
-		this.positionX = 0; // Position horizontale
-		this.positionY = 0; // Position verticale
-		this.baseSpeed = 6; // Vitesse de base divisée par 2 (de 12 à 6)
-		this.currentSpeed = this.baseSpeed; // Vitesse actuelle
-		this.movingX = false;
-		this.movingY = false;
-		this.directionX = 0; // -1: gauche, 0: arrêt, 1: droite
-		this.directionY = 0; // -1: haut, 0: arrêt, 1: bas
-		
-		// Pokéballs sur la carte - ajout de cache pour l'optimisation
-		this.pokeballs = [];
-		this.pokeballsVisible = []; // Cache des pokéballs visibles
-		this.lastViewportInfo = null; // Cache du dernier viewport
-		this.mapLoaded = false;
-		
-		// Compteur pour limiter les erreurs affichées
-		this.errorCount = 0;
-		this.lastErrorTime = Date.now();
-		
-		// Ajouter des gestionnaires d'événement pour vérifier le chargement
-		this.image.onload = () => {
-			console.log("Image de la carte chargée avec succès:", this.image.width, "x", this.image.height);
-			// Ajuster la taille si nécessaire
-			if (this.image.width !== this.width || this.image.height !== this.height) {
-				console.warn("La taille de l'image ne correspond pas aux dimensions attendues!");
-				this.width = this.image.width;
-				this.height = this.image.height;
-			}
-			
-			this.mapLoaded = true;
-			// Trouver une position initiale aléatoire
-			this.findSafeStartPosition();
-			// Générer des Pokéballs initiales
-			this.generateInitialPokeballs(150); // Doublé de 75 à 150
-		};
-		
-		this.image.onerror = () => {
-			console.error("ERREUR: Impossible de charger l'image de la carte (assets/maps/world_map.png)");
-			this.createFallbackMap();
-		};
-		
-		// Pré-chargement des sprites de Pokéballs pour optimisation
-		this.pokeballSprites = {};
-		this.loadPokeballSprites();
-	}
-		
-	// scripts/map.js - Méthode loadPokeballSprites
+        // Charger la carte du monde - CHEMIN CORRIGÉ
+        this.image = new Image();
+        this.image.src = 'Assets/maps/world_map.png';
+        
+        // Dimensions réelles de la carte
+        this.width = 8192;
+        this.height = 4096;
+        
+        this.positionX = 0; // Position horizontale
+        this.positionY = 0; // Position verticale
+        this.baseSpeed = 6; // Vitesse de base divisée par 2 (de 12 à 6)
+        this.currentSpeed = this.baseSpeed; // Vitesse actuelle
+        this.movingX = false;
+        this.movingY = false;
+        this.directionX = 0; // -1: gauche, 0: arrêt, 1: droite
+        this.directionY = 0; // -1: haut, 0: arrêt, 1: bas
+        
+        // Pokéballs sur la carte - ajout de cache pour l'optimisation
+        this.pokeballs = [];
+        this.pokeballsVisible = []; // Cache des pokéballs visibles
+        this.lastViewportInfo = null; // Cache du dernier viewport
+        this.mapLoaded = false;
+        
+        // Compteur pour limiter les erreurs affichées
+        this.errorCount = 0;
+        this.lastErrorTime = Date.now();
+        
+        // Ajouter des gestionnaires d'événement pour vérifier le chargement
+        this.image.onload = () => {
+            console.log("Image de la carte chargée avec succès:", this.image.width, "x", this.image.height);
+            // Ajuster la taille si nécessaire
+            if (this.image.width !== this.width || this.image.height !== this.height) {
+                console.warn("La taille de l'image ne correspond pas aux dimensions attendues!");
+                this.width = this.image.width;
+                this.height = this.image.height;
+            }
+            
+            this.mapLoaded = true;
+            // Trouver une position initiale aléatoire
+            this.findSafeStartPosition();
+            // Générer des Pokéballs initiales
+            this.generateInitialPokeballs(150); // Doublé de 75 à 150
+        };
+        
+        this.image.onerror = () => {
+            console.error("ERREUR: Impossible de charger l'image de la carte");
+            this.createFallbackMap();
+        };
+        
+        // Pré-chargement des sprites de Pokéballs pour optimisation
+        this.pokeballSprites = {};
+        this.loadPokeballSprites();
+    }
+    
+	// Méthode optimisée pour charger les sprites de pokéballs - CHEMINS CORRIGÉS
 	loadPokeballSprites() {
 		const types = ['normal', 'super', 'hyper'];
 		
 		types.forEach(type => {
-			// Chemin absolu sans point ni slash au début
-			const spritePath = `assets/sprites/${type}ball.png`;
-			
+			// Correction du chemin pour le type 'normal' - CHEMIN CORRIGÉ
+			const spritePath = type === 'normal' 
+				? 'Assets/sprites/pokeball.png'  // Chemin explicite pour normal
+				: `Assets/sprites/${type}ball.png`;
+				
 			const img = new Image();
 			img.src = spritePath;
 			
@@ -93,7 +95,7 @@ class GameMap {
 			});
 		});
 	}
-		
+    
     // Position initiale aléatoire
     findSafeStartPosition() {
         this.positionX = Math.random() * this.width;
@@ -191,7 +193,7 @@ class GameMap {
         // Vitesse constante et modérée
         this.currentSpeed = this.baseSpeed;
         
-// Mise à jour horizontale
+        // Mise à jour horizontale
         if (this.movingX && !this.movingY) { // Empêcher le mouvement diagonal
             const newPositionX = this.positionX + this.currentSpeed * this.directionX;
             this.positionX = newPositionX;
@@ -216,14 +218,14 @@ class GameMap {
                 this.positionY -= this.height * 2;
             }
         }
-        
-        // Générer aléatoirement des Pokéballs avec 20 fois plus de chance (0.15 au lieu de 0.015)
-        if (Math.random() < 0.15 && this.pokeballs.length < 300) { // Limite augmentée à 300
-            // Spawn multiple - générer jusqu'à 3 pokéballs à la fois
-            for (let i = 0; i < 3 && this.pokeballs.length < 300; i++) {
-                this.tryGeneratePokeball();
-            }
-        }
+		
+		// Générer aléatoirement des Pokéballs avec 20 fois plus de chance (0.15 au lieu de 0.015)
+		if (Math.random() < 0.15 && this.pokeballs.length < 300) { // Limite augmentée à 300 au lieu de 150
+		// Spawn multiple - générer jusqu'à 3 pokéballs à la fois
+		for (let i = 0; i < 3 && this.pokeballs.length < 300; i++) {
+				this.tryGeneratePokeball();
+			}
+		}
         
         // Mettre à jour les animations des Pokéballs de manière optimisée
         // Ne mettre à jour que les pokéballs visibles ou à proximité
@@ -453,7 +455,6 @@ class GameMap {
                     );
                 }
             });
-            
         } catch (e) {
             console.error("Erreur lors du dessin de la carte:", e);
             ctx.fillStyle = 'blue';
