@@ -1,50 +1,50 @@
-	// scripts/player.js - Dans constructor
+// scripts/player.js
 class Player {
     constructor() {
-		// Dimensions des frames du sprite
-		this.width = 32; 
-		this.height = 32; 
-		this.frameX = 0;
-		this.frameY = 0; // Direction (0:bas, 1:gauche, 2:droite, 3:haut)
-		
-		// Charger le sprite du joueur normal avec chemins absolus
-		this.sprite = new Image();
-		this.sprite.src = 'assets/sprites/player_01.png';
-		
-		// Charger le sprite du joueur pour les zones sombres
-		this.darkSprite = new Image();
-		this.darkSprite.src = 'assets/sprites/player_02.png';
-		
-		// Indicateur pour savoir quel sprite utiliser
-		this.isOnDarkZone = false;
-		
-		// Animation
-		this.animationFrame = 0;
-		this.animationTimer = 0;
-		this.spriteLoaded = false;
-		this.darkSpriteLoaded = false;
-		
-		// Ajouter des gestionnaires d'événement pour vérifier le chargement
-		this.sprite.onload = () => {
-			console.log("Sprite normal du joueur chargé avec succès:", this.sprite.width, "x", this.sprite.height);
-			this.spriteLoaded = true;
-		};
-		
-		this.darkSprite.onload = () => {
-			console.log("Sprite sombre du joueur chargé avec succès:", this.darkSprite.width, "x", this.darkSprite.height);
-			this.darkSpriteLoaded = true;
-		};
-		
-		this.sprite.onerror = () => {
-			console.error("ERREUR: Impossible de charger le sprite normal du joueur (assets/sprites/player_01.png)");
-			this.createFallbackSprite(this.sprite, false);
-		};
-		
-		this.darkSprite.onerror = () => {
-			console.error("ERREUR: Impossible de charger le sprite sombre du joueur (assets/sprites/player_02.png)");
-			this.createFallbackSprite(this.darkSprite, true);
-		};
-	}
+        // Dimensions des frames du sprite - corrigées selon l'image
+        this.width = 32; // Largeur d'une frame
+        this.height = 32; // Hauteur d'une frame (corrigé de 28 à 32)
+        this.frameX = 0;
+        this.frameY = 0; // Direction (0:bas, 1:gauche, 2:droite, 3:haut)
+        
+        // Charger le sprite du joueur normal - CHEMIN CORRIGÉ
+        this.sprite = new Image();
+        this.sprite.src = 'Assets/sprites/player_01.png';
+        
+        // Charger le sprite du joueur pour les zones sombres - CHEMIN CORRIGÉ
+        this.darkSprite = new Image();
+        this.darkSprite.src = 'Assets/sprites/player_02.png';
+        
+        // Indicateur pour savoir quel sprite utiliser
+        this.isOnDarkZone = false;
+        
+        // Animation
+        this.animationFrame = 0;
+        this.animationTimer = 0;
+        this.spriteLoaded = false;
+        this.darkSpriteLoaded = false;
+        
+        // Ajouter des gestionnaires d'événement pour vérifier le chargement
+        this.sprite.onload = () => {
+            console.log("Sprite normal du joueur chargé avec succès:", this.sprite.width, "x", this.sprite.height);
+            this.spriteLoaded = true;
+        };
+        
+        this.darkSprite.onload = () => {
+            console.log("Sprite sombre du joueur chargé avec succès:", this.darkSprite.width, "x", this.darkSprite.height);
+            this.darkSpriteLoaded = true;
+        };
+        
+        this.sprite.onerror = () => {
+            console.error("ERREUR: Impossible de charger le sprite normal du joueur");
+            this.createFallbackSprite(this.sprite, false);
+        };
+        
+        this.darkSprite.onerror = () => {
+            console.error("ERREUR: Impossible de charger le sprite sombre du joueur");
+            this.createFallbackSprite(this.darkSprite, true);
+        };
+    }
     
     // Méthode pour créer un sprite de remplacement
     createFallbackSprite(targetSprite, isDark) {
