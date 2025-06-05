@@ -103,83 +103,79 @@ class PokemonSystem {
         this.createFallbackPokemonSprites();
     }
     
-	// scripts/pokemon_core.js - Méthode loadPokeballSprites
-	loadPokeballSprites() {
-		const types = ['normal', 'super', 'hyper'];
-		
-		types.forEach(type => {
-			// Chemin absolu sans point ni slash au début
-			const spritePath = `assets/sprites/${type}ball.png`;
-			
-			const img = new Image();
-			img.src = spritePath;
-			
-			// Log pour déboguer
-			console.log(`Chargement du sprite ${type}ball depuis ${spritePath}`);
-			
-			// Stocker la promesse de chargement pour optimisation
-			const loadPromise = new Promise((resolve) => {
-				img.onload = () => {
-					console.log(`Sprite de ${type}ball chargé avec succès depuis ${spritePath}`);
-					resolve(true);
-				};
-				img.onerror = (e) => {
-					console.error(`ERREUR: Impossible de charger le sprite de ${type}ball depuis ${spritePath}`, e);
-					resolve(false);
-				};
-			});
-			
-			this.pokeballSprites[type] = {
-				image: img,
-				loaded: false,
-				loadPromise: loadPromise
-			};
-			
-			// Mettre à jour l'état une fois chargé
-			loadPromise.then(success => {
-				this.pokeballSprites[type].loaded = success;
-			});
-		});
-	}
+    // Méthode optimisée pour charger les sprites de pokéballs - CHEMINS CORRIGÉS
+    loadPokeballSprites() {
+        const types = ['normal', 'super', 'hyper'];
+        
+        types.forEach(type => {
+            // Correction du chemin pour le type 'normal' - CHEMIN CORRIGÉ
+            const spritePath = type === 'normal' 
+                ? 'Assets/sprites/pokeball.png'  // Chemin explicite pour normal
+                : `Assets/sprites/${type}ball.png`;
+                
+            const img = new Image();
+            img.src = spritePath;
+            
+            // Log pour déboguer
+            console.log(`Chargement du sprite ${type}ball depuis ${spritePath}`);
+            
+            // Stocker la promesse de chargement pour optimisation
+            const loadPromise = new Promise((resolve) => {
+                img.onload = () => {
+                    console.log(`Sprite de ${type}ball chargé avec succès depuis ${spritePath}`);
+                    resolve(true);
+                };
+                img.onerror = (e) => {
+                    console.error(`ERREUR: Impossible de charger le sprite de ${type}ball depuis ${spritePath}`, e);
+                    resolve(false);
+                };
+            });
+            
+            this.pokeballSprites[type] = {
+                image: img,
+                loaded: false,
+                loadPromise: loadPromise
+            };
+            
+            // Mettre à jour l'état une fois chargé
+            loadPromise.then(success => {
+                this.pokeballSprites[type].loaded = success;
+            });
+        });
+    }
     
-	// scripts/pokemon_core.js - Méthode preloadPokemonSprites
-	preloadPokemonSprites() {
-		this.waterPokemons.forEach(pokemon => {
-			// Chemin absolu sans point ni slash au début
-			const spritePath = `assets/sprites/pokemon/${pokemon.sprite}`;
-			
-			const img = new Image();
-			img.src = spritePath;
-			
-			// Log pour déboguer
-			console.log(`Chargement du sprite Pokémon: ${pokemon.name} depuis ${spritePath}`);
-			
-			// Stocker la promesse de chargement pour optimisation
-			const loadPromise = new Promise((resolve) => {
-				img.onload = () => {
-					console.log(`Sprite de ${pokemon.name} chargé avec succès`);
-					resolve(true);
-				};
-				img.onerror = (e) => {
-					console.error(`ERREUR: Impossible de charger le sprite de ${pokemon.name} depuis ${spritePath}`, e);
-					resolve(false);
-				};
-			});
-			
-			this.pokemonSprites[pokemon.name] = {
-				image: img,
-				loaded: false,
-				loadPromise: loadPromise
-			};
-			
-			// Mettre à jour l'état une fois chargé
-			loadPromise.then(success => {
-				this.pokemonSprites[pokemon.name].loaded = success;
-			});
-		});
-	}
-
-	// Méthode pour créer des sprites de secours pour les Pokémon
+    // Méthode optimisée pour précharger les sprites Pokémon - CHEMINS CORRIGÉS
+    preloadPokemonSprites() {
+        this.waterPokemons.forEach(pokemon => {
+            const img = new Image();
+            img.src = `Assets/sprites/pokemon/${pokemon.sprite}`;
+            
+            // Stocker la promesse de chargement pour optimisation
+            const loadPromise = new Promise((resolve) => {
+                img.onload = () => {
+                    //console.log(`Sprite de ${pokemon.name} chargé avec succès`);
+                    resolve(true);
+                };
+                img.onerror = () => {
+                    console.error(`ERREUR: Impossible de charger le sprite de ${pokemon.name}`);
+                    resolve(false);
+                };
+            });
+            
+            this.pokemonSprites[pokemon.name] = {
+                image: img,
+                loaded: false,
+                loadPromise: loadPromise
+            };
+            
+            // Mettre à jour l'état une fois chargé
+            loadPromise.then(success => {
+                this.pokemonSprites[pokemon.name].loaded = success;
+            });
+        });
+    }
+    
+    // Méthode pour créer des sprites de secours pour les Pokémon
     createFallbackPokemonSprites() {
         // Palette de couleurs pour différencier les Pokémon
         const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#9932CC', '#FF8C00', '#20B2AA', '#FF69B4'];
@@ -375,17 +371,22 @@ class PokemonSystem {
         this.updateCounters();
     }
     
-    // Fonctions pour le gameplay - à déplacer dans pokemon_gameplay.js
-    // Ces méthodes restent déclarées ici pour la compatibilité
-    spawnWildPokemon(gameMap) {}
-    updateWildPokemons(gameMap) {}
-    checkWildPokemonCollisions(playerPosition, gameMap) {}
-    escape() {}
-    attemptCapture(ballType) {}
-    updateCaptureAnimation() {}
-    showCaptureSuccessAnimation() {}
-    update(gameMap) {}
-    drawWildPokemons(ctx, gameMap) {}
-    drawEncounterScreen(ctx) {}
-    drawCapturedPokemon(ctx) {}
+    showCaptureSuccessAnimation() {
+        // Créer un élément pour l'animation de succès
+        const successElement = document.createElement('div');
+        successElement.className = 'capture-success';
+        successElement.textContent = 'CAPTURE RÉUSSIE!';
+        
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            gameContainer.appendChild(successElement);
+            
+            // Supprimer l'élément après l'animation
+            setTimeout(() => {
+                if (gameContainer.contains(successElement)) {
+                    successElement.remove();
+                }
+            }, 2000);
+        }
+    }
 }
