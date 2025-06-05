@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu Kwoo</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu Kwoo</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="game-header">
-        <img id="game-logo" src="Assets/logo.png" alt="Jeu Kwoo">
-    </div>
+  <div id="game-header">
+    <img id="game-logo" src="Assets/logo.png" alt="Jeu Kwoo">
+  </div>
+  
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="notification-area"></div>
+    <div id="battle-text"></div>
     
-    <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        
-        <div id="notification-area"></div>
-        <div id="battle-text"></div>
-        
-        <div id="pokeball-buttons">
-            <div class="pokeball-button" id="pokeball-btn">
-                <img src="Assets/sprites/pokeball.png" width="40" height="40">
-                <span id="pokeball-count">0</span>
-            </div>
-            <div class="pokeball-button" id="superball-btn">
-                <img src="Assets/sprites/superball.png" width="40" height="40">
-                <span id="superball-count">0</span>
-            </div>
-            <div class="pokeball-button" id="hyperball-btn">
-                <img src="Assets/sprites/hyperball.png" width="40" height="40">
-                <span id="hyperball-count">0</span>
-            </div>
-        </div>
+    <div id="pokeball-buttons">
+      <div class="pokeball-button" id="pokeball-btn">
+        <img src="Assets/sprites/pokeball.png" width="40" height="40">
+        <span id="pokeball-count">0</span>
+      </div>
+      <div class="pokeball-button" id="superball-btn">
+        <img src="Assets/sprites/superball.png" width="40" height="40">
+        <span id="superball-count">0</span>
+      </div>
+      <div class="pokeball-button" id="hyperball-btn">
+        <img src="Assets/sprites/hyperball.png" width="40" height="40">
+        <span id="hyperball-count">0</span>
+      </div>
     </div>
-    
-    <!-- Scripts dans le bon ordre -->
-    <script src="scripts/map_data.js"></script>
-    <script src="scripts/player.js"></script>
-    <script src="scripts/map.js"></script>
-    <script src="scripts/pokemon.js"></script>
-    <script src="scripts/game.js"></script>
+  </div>
+  
+  <script src="scripts/map_data.js"></script>
+  <script src="scripts/player.js"></script>
+  <script src="scripts/map.js"></script>
+  <script src="scripts/pokemon.js"></script>
+  <script src="scripts/game.js"></script>
 </body>
 </html>
