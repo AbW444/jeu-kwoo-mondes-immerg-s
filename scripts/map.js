@@ -8,7 +8,7 @@ class GameMap {
     
     this.positionX = 0;
     this.positionY = 0;
-    this.baseSpeed = 6;
+    this.baseSpeed = 3;
     this.currentSpeed = this.baseSpeed;
     this.movingX = false;
     this.movingY = false;
