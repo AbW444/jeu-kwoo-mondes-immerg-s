@@ -1,5 +1,6 @@
 	// scripts/player.js - Dans constructor
-	constructor() {
+class Player {
+    constructor() {
 		// Dimensions des frames du sprite
 		this.width = 32; 
 		this.height = 32; 
