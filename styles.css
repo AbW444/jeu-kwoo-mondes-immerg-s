@@ -1,160 +1,155 @@
 body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #333;
-    font-family: monospace;
-    /* Fond personnalisÃƒÂ© sera dÃƒÂ©fini en JavaScript */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #333 url("Assets/background.jpg") center/cover no-repeat;
+  font-family: monospace;
 }
 
 #game-header {
-    margin-bottom: 10px;
-    text-align: center;
-    width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 #game-logo {
-    max-width: 300px;
-    height: auto;
+  max-width: 300px;
+  height: auto;
 }
 
 #game-container {
-    position: relative;
-    border: 4px solid #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 95vw; /* Ãƒâ€°tendu sur les cÃƒÂ´tÃƒÂ©s */
-    height: 80vh;
-    overflow: hidden;
+  position: relative;
+  border: 4px solid #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,.5);
+  width: 95vw;
+  height: 80vh;
+  overflow: hidden;
 }
 
 #gameCanvas {
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 #pokeball-buttons {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 15px;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    border-radius: 10px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  background: rgba(0,0,0,.5);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .pokeball-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid white;
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    transition: transform 0.2s;
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: transform .2s;
 }
 
 .pokeball-button:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .pokeball-button img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .pokeball-button span {
-    position: absolute;
-    bottom: -20px;
-    color: white;
-    font-size: 12px;
-    white-space: nowrap;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px black;
+  position: absolute;
+  bottom: -20px;
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
 }
 
 #battle-text {
-    position: absolute;
-    bottom: 90px; /* Juste au-dessus des boutons de PokÃƒÂ©balls */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%; /* Plus ÃƒÂ©troite - MODIFIÃƒâ€° */
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 15px; /* Un peu plus haute - MODIFIÃƒâ€° */
-    border-radius: 5px;
-    border: 1px solid white; /* Contour plus fin */
-    text-align: center;
-    font-size: 14px;
-    font-family: monospace;
-    display: none; /* CachÃƒÂ© par dÃƒÂ©faut */
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  background: rgba(0,0,0,.7);
+  color: white;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: 5px;
+  text-align: center;
+  font: 14px monospace;
+  display: none;
 }
 
 #notification-area {
-    display: none; /* CachÃƒÂ© car remplacÃƒÂ© par battle-text */
+  display: none;
 }
 
 .notification {
-    display: none; /* CachÃƒÂ©e car remplacÃƒÂ©e par battle-text */
+  display: none;
 }
 
 .escape-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-    z-index: 100;
-    border: 1px solid white; /* Contour plus fin, comme la zone de texte */
-    font-family: monospace;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,.7);
+  color: white;
+  padding: 8px 15px;
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  font: bold monospace;
+  transition: background-color .3s;
+  z-index: 100;
 }
 
 .escape-button:hover {
-    background-color: rgba(255, 0, 0, 0.7);
+  background: rgba(255,0,0,.7);
 }
 
 .capture-success {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 15px 25px;
-    border-radius: 20px;
-    border: 2px solid white;
-    animation: pulsate 2s ease-in-out;
-    z-index: 200;
-    font-family: monospace;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background: rgba(0,0,0,.7);
+  color: white;
+  font: bold 24px monospace;
+  padding: 15px 25px;
+  border: 2px solid white;
+  border-radius: 20px;
+  animation: pulsate 2s ease-in-out;
+  z-index: 200;
 }
 
 @keyframes fadeOut {
-    0% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @keyframes pulsate {
-    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  0% { transform: translate(-50%,-50%) scale(.5); opacity: 0; }
+  50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
 }
